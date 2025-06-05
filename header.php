@@ -2,11 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Task 2 - CRUD App</title>
+    <title>Task 3 - Advanced Features</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        body{ font: 14px sans-serif; }
+        body { 
+            font: 14px sans-serif; 
+            background-color: #f8f9fa; /* Lighter background for a cleaner look */
+        }
         .wrapper{ width: 360px; padding: 20px; margin: auto; }
+        .card {
+            transition: transform 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-title a {
+            color: #343a40;
+            text-decoration: none;
+        }
+        .card-title a:hover {
+            color: #007bff;
+        }
     </style>
 </head>
 <body>
