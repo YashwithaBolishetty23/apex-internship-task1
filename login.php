@@ -18,7 +18,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     }
     
     if(empty($username_err) && empty($password_err)){
-        $sql = "SELECT id, username, password FROM users WHERE username = :username";
+        // Get user role from database
+        $sql = "SELECT id, username, password, role FROM users WHERE username = :username";
         if($stmt = $pdo->prepare($sql)){
             $stmt->bindParam(":username", $username, PDO::PARAM_STR);
             if($stmt->execute()){
@@ -27,7 +28,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         if(password_verify($password, $row["password"])){
                             $_SESSION["loggedin"] = true;
                             $_SESSION["id"] = $row["id"];
-                            $_SESSION["username"] = $row["username"];                            
+                            $_SESSION["username"] = $row["username"];
+                            $_SESSION["role"] = $row["role"]; // Store role in session
                             header("location: index.php");
                         } else{
                             $login_err = "Invalid username or password.";

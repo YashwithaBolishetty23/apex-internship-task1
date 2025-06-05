@@ -8,13 +8,13 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 $title = $content = "";
 $post_id = $_GET['id'];
 
-// **IMPROVEMENT**: Security check to ensure user owns the post before editing
+// **ROLE-BASED ACCESS CONTROL**: Check if user owns the post OR is an admin
 $sql_check = "SELECT user_id FROM posts WHERE id = :id";
 if($stmt_check = $pdo->prepare($sql_check)){
     $stmt_check->bindParam(":id", $post_id, PDO::PARAM_INT);
     $stmt_check->execute();
     $post = $stmt_check->fetch();
-    if(!$post || $post['user_id'] != $_SESSION['id']){
+    if(!$post || ($post['user_id'] != $_SESSION['id'] && $_SESSION['role'] !== 'admin')){
         die("Access Denied. You do not have permission to edit this post.");
     }
 }
