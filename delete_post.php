@@ -6,7 +6,6 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 }
 
 if(isset($_GET["id"]) && !empty($_GET["id"])){
-    // **ROLE-BASED ACCESS CONTROL**: Check if user owns the post OR is an admin
     $sql_check = "SELECT user_id FROM posts WHERE id = :id";
     if($stmt_check = $pdo->prepare($sql_check)){
         $stmt_check->bindParam(":id", $_GET["id"], PDO::PARAM_INT);
@@ -17,12 +16,14 @@ if(isset($_GET["id"]) && !empty($_GET["id"])){
         }
     }
 
-    // Proceed with deletion if check passes
     $sql = "DELETE FROM posts WHERE id = :id";
     if($stmt = $pdo->prepare($sql)){
         $stmt->bindParam(":id", $_GET["id"], PDO::PARAM_INT);
         if($stmt->execute()){
+            // **NEW**: Set flash message
+            $_SESSION['flash_message'] = "Post deleted successfully!";
             header("location: index.php");
+            exit;
         } else{
             echo "Oops! Something went wrong.";
         }

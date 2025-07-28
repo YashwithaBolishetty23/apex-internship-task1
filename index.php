@@ -11,10 +11,7 @@ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $start = ($page > 1) ? ($page * $limit) - $limit : 0;
 $search_term = isset($_GET['search']) ? $_GET['search'] : '';
 
-// Base SQL queries
-$sql = "SELECT posts.id, posts.title, posts.content, posts.created_at, posts.user_id, users.username 
-        FROM posts 
-        JOIN users ON posts.user_id = users.id";
+$sql = "SELECT posts.id, posts.title, posts.content, posts.created_at, posts.user_id, users.username FROM posts JOIN users ON posts.user_id = users.id";
 $count_sql = "SELECT COUNT(posts.id) FROM posts JOIN users ON posts.user_id = users.id";
 
 $where_clauses = [];
@@ -43,16 +40,10 @@ $total_pages = ceil($total_posts / $limit);
 $sql .= " ORDER BY posts.created_at DESC LIMIT :start, :limit";
 $stmt = $pdo->prepare($sql);
 
-// **FIX**: Switched to a more reliable method for binding parameters.
-if (isset($params[':user_id'])) {
-    $stmt->bindValue(':user_id', $params[':user_id'], PDO::PARAM_INT);
-}
-if (isset($params[':search'])) {
-    $stmt->bindValue(':search', $params[':search'], PDO::PARAM_STR);
-}
+if (isset($params[':user_id'])) { $stmt->bindValue(':user_id', $params[':user_id'], PDO::PARAM_INT); }
+if (isset($params[':search'])) { $stmt->bindValue(':search', $params[':search'], PDO::PARAM_STR); }
 $stmt->bindValue(':start', $start, PDO::PARAM_INT);
 $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-
 $stmt->execute();
 ?>
 <div class="d-flex justify-content-between align-items-center">
@@ -69,7 +60,8 @@ $stmt->execute();
         <div class="col-md-6 col-lg-4 mb-4">
             <div class="card h-100">
                 <div class="card-body d-flex flex-column">
-                    <h5 class="card-title"><a href="#"><?php echo htmlspecialchars($row['title']); ?></a></h5>
+                    <!-- **FIXED**: Link now points to the new post.php page -->
+                    <h5 class="card-title"><a href="post.php?id=<?php echo $row['id']; ?>"><?php echo htmlspecialchars($row['title']); ?></a></h5>
                     <p class="card-text"><?php echo htmlspecialchars(substr($row['content'], 0, 100)); ?>...</p>
                     <p class="card-text mt-auto"><small class="text-muted">By <?php echo htmlspecialchars($row['username']); ?> on <?php echo date('M j, Y', strtotime($row['created_at'])); ?></small></p>
                     

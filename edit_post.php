@@ -8,7 +8,6 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 $title = $content = "";
 $post_id = $_GET['id'];
 
-// **ROLE-BASED ACCESS CONTROL**: Check if user owns the post OR is an admin
 $sql_check = "SELECT user_id FROM posts WHERE id = :id";
 if($stmt_check = $pdo->prepare($sql_check)){
     $stmt_check->bindParam(":id", $post_id, PDO::PARAM_INT);
@@ -26,7 +25,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $stmt->bindParam(":content", $_POST['content'], PDO::PARAM_STR);
         $stmt->bindParam(":id", $post_id, PDO::PARAM_INT);
         if($stmt->execute()){
+            // **NEW**: Set flash message
+            $_SESSION['flash_message'] = "Post updated successfully!";
             header("location: index.php");
+            exit;
         }
     }
 } else {

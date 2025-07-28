@@ -12,7 +12,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $stmt->bindParam(":content", $_POST['content'], PDO::PARAM_STR);
         $stmt->bindParam(":user_id", $_SESSION['id'], PDO::PARAM_INT);
         if($stmt->execute()){
+            // **NEW**: Set flash message
+            $_SESSION['flash_message'] = "Post created successfully!";
             header("location: index.php");
+            exit;
         }
     }
 }
